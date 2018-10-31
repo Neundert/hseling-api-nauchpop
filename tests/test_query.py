@@ -1,6 +1,6 @@
 import pytest
 
-from hseling_api_template.query import query_data
+from hseling_api_nauchpop.query import query_data
 
 
 test_data = [
