@@ -154,12 +154,15 @@ def save_file(upload_file):
     }
 
 
-def add_processed_file(processed_file_id, contents, extension=None):
+def add_processed_file(processed_file_id,
+                       contents,
+                       extension=None,
+                       length=None):
     if not processed_file_id:
         processed_file_id = str(uuid4())
     if extension:
         filename = PROCESSED_PREFIX + processed_file_id + ("." + extension)
     else:
         filename = ""
-    put_file(filename, contents)
+    put_file(filename, contents, length)
     return filename

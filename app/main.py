@@ -1,14 +1,20 @@
-from flask import Flask, jsonify, request
+from io import BytesIO
+from os.path import join, getsize
+
+from flask import Flask, jsonify, request, Response
 from logging import getLogger
+
+import inotify.adapters
 
 import boilerplate
 
-from hseling_api_nauchpop.process import process_data
+from hseling_api_nauchpop.process import process_data  # NOQA
 from hseling_api_nauchpop.query import query_data
 
 
 ALLOWED_EXTENSIONS = ['txt']
-
+TOMITA_PATH_IN = '/tomita/in'
+TOMITA_PATH_OUT = '/tomita/out'
 
 log = getLogger(__name__)
 
@@ -33,15 +39,40 @@ def process_task(file_ids_list=None):
     data_to_process = {file_id[len(boilerplate.UPLOAD_PREFIX):]:
                        boilerplate.get_file(file_id)
                        for file_id in files_to_process}
-    processed_file_ids = list()
-    for processed_file_id, contents in process_data(data_to_process):
-        processed_file_ids.append(
-            boilerplate.add_processed_file(
-                processed_file_id,
-                contents,
-                extension='txt'
-            ))
-    return processed_file_ids
+    for filename, file_contents in data_to_process.items():
+        with open(join(TOMITA_PATH_IN, filename), 'wb') as f:
+            f.write(file_contents)
+
+    i = inotify.adapters.Inotify()
+
+    i.add_watch(TOMITA_PATH_OUT)
+
+    processed_file_ids = set()
+
+    for (_, type_names, path, out_filename) in i.event_gen(yield_nones=False):
+        print("PATH=[{}] FILENAME=[{}] EVENT_TYPES={}".format(
+            path, out_filename, type_names))
+
+        if not out_filename.startswith('.') and \
+           out_filename.endswith('.xml') and \
+           'IN_CLOSE_WRITE' in type_names:
+            full_filename = join(path, out_filename)
+            with open(full_filename, 'rb') as f:
+                contents = BytesIO(f.read())
+                contents_length = getsize(full_filename)
+                print(contents)
+                generated_filename = boilerplate.add_processed_file(
+                    None,
+                    contents,
+                    "xml",
+                    contents_length
+                )
+                processed_file_ids.add(generated_filename)
+
+        if len(processed_file_ids) >= len(set(data_to_process.keys())):
+            break
+
+    return list(processed_file_ids)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -62,7 +93,11 @@ def upload_endpoint():
 @app.route('/files/<path:file_id>')
 def get_file_endpoint(file_id):
     if file_id in boilerplate.list_files(recursive=True):
-        return boilerplate.get_file(file_id)
+        contents = boilerplate.get_file(file_id)
+        if file_id.startswith(boilerplate.PROCESSED_PREFIX) and \
+           file_id.endswith('.xml'):
+            return Response(contents, mimetype='text/xml')
+        return Response(contents, mimetype='text/plain')
     return jsonify({'error': boilerplate.ERROR_NO_SUCH_FILE})
 
 
