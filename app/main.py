@@ -8,7 +8,7 @@ import inotify.adapters
 
 import boilerplate
 
-from hseling_api_nauchpop.process import process_data
+from hseling_api_nauchpop.process import process_data  # NOQA
 from hseling_api_nauchpop.query import query_data
 
 
@@ -53,13 +53,20 @@ def process_task(file_ids_list=None):
         print("PATH=[{}] FILENAME=[{}] EVENT_TYPES={}".format(
             path, out_filename, type_names))
 
-        if not out_filename.startswith('.') and out_filename.endswith('.xml') and 'IN_CLOSE_WRITE' in type_names:
+        if not out_filename.startswith('.') and \
+           out_filename.endswith('.xml') and \
+           'IN_CLOSE_WRITE' in type_names:
             full_filename = join(path, out_filename)
             with open(full_filename, 'rb') as f:
                 contents = BytesIO(f.read())
                 contents_length = getsize(full_filename)
                 print(contents)
-                generated_filename = boilerplate.add_processed_file(None, contents, "xml", contents_length)
+                generated_filename = boilerplate.add_processed_file(
+                    None,
+                    contents,
+                    "xml",
+                    contents_length
+                )
                 processed_file_ids.add(generated_filename)
 
         if len(processed_file_ids) >= len(set(data_to_process.keys())):
@@ -87,7 +94,8 @@ def upload_endpoint():
 def get_file_endpoint(file_id):
     if file_id in boilerplate.list_files(recursive=True):
         contents = boilerplate.get_file(file_id)
-        if file_id.startswith(boilerplate.PROCESSED_PREFIX) and file_id.endswith('.xml'):
+        if file_id.startswith(boilerplate.PROCESSED_PREFIX) and \
+           file_id.endswith('.xml'):
             return Response(contents, mimetype='text/xml')
         return Response(contents, mimetype='text/plain')
     return jsonify({'error': boilerplate.ERROR_NO_SUCH_FILE})
