@@ -26,6 +26,14 @@ services:
   links:
    - redis
    - minio
+   - hse-api-nauchpop-tomita
+  environment: *common-variables
+
+ hse-api-nauchpop-tomita:
+  build: tomita
+  command: /usr/bin/tomita-parser -v
+  links:
+   - minio
   environment: *common-variables
 
  minio:
