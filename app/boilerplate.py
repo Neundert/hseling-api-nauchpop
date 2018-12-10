@@ -180,7 +180,6 @@ def get_task_status(task_id):
         task_result = str(task.result)
     else:
         task_result = task.result
-    print(task_result)
     return {
         "task_id": str(task.id),
         "ready": task.ready(),
@@ -205,7 +204,6 @@ def save_file(upload_file):
 def add_processed_file(processed_file_id,
                        contents,
                        extension=None):
-    print(processed_file_id)
     if not processed_file_id:
         processed_file_id = str(uuid4())
     if extension:
