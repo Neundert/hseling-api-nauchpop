@@ -70,8 +70,8 @@ services:
    - hse-api-nauchpop-tomita
   environment: *common-variables
 
-
 volumes:
   data:
   tomita-in:
   tomita-out:
+

@@ -12,14 +12,12 @@ encoding "utf8";
 
 TTextMinerConfig {
   Dictionary = "/tomita/static/dic.gzt";
-  PrettyOutput = "/tomita/pretty/evaluation.html";
   Input = {
     File = "/tomita/in/$filename";
   }
   Articles = [
     { Name = "sci_names" }
   ]
-  PrintRules="rules.txt";
   Facts = [
     { Name = "Person" }
   ]

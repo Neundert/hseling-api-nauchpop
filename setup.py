@@ -17,7 +17,7 @@ AUTHOR = 'Sergey Sobko'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '1.0.0'
 
-REQUIRED = []
+REQUIRED = ['requests', 'lxml', 'html5lib', 'beautifulsoup4', 'scrapy']
 
 EXTRAS = {}
 
@@ -49,6 +49,7 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=('tests', 'app')),
+    package_data={'hseling_api_nauchpop':['topic_module/models/*.pkl']},
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
