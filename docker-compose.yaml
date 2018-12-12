@@ -23,23 +23,8 @@ services:
  hse-api-celery:
   build: .
   command: celery -A main.celery worker
-  volumes:
-   - tomita-in:/tomita/in
-   - tomita-out:/tomita/out
   links:
    - redis
-   - minio
-   - hse-api-nauchpop-tomita
-  environment: *common-variables
-
- hse-api-nauchpop-tomita:
-  build:
-   context: .
-   dockerfile: ./tomita/Dockerfile
-  volumes:
-   - tomita-in:/tomita/in
-   - tomita-out:/tomita/out
-  links:
    - minio
   environment: *common-variables
 
@@ -60,18 +45,13 @@ services:
    context: .
    dockerfile: ./ssh/Dockerfile
   volumes:
-   - tomita-in:/tomita/in
-   - tomita-out:/tomita/out
    - data:/data
   ports:
    - "2222:22"
   links:
    - minio
-   - hse-api-nauchpop-tomita
   environment: *common-variables
 
 volumes:
   data:
-  tomita-in:
-  tomita-out:
 

@@ -53,7 +53,7 @@ def _parse_xml(xml_output):
     Names require further processing. '''
     xml = bs.BeautifulSoup(xml_output, 'lxml')
     names = xml.find_all('name')
-    pattern = re.compile(r'val="([А-ЯЁ]+)">')
+    # pattern = re.compile(r'val="([А-ЯЁ]+)">')
     names_extracted = []
     for name in names:
         name = name.get('val')

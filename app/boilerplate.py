@@ -18,7 +18,7 @@ MINIO_ACCESS_KEY = environ["MINIO_ACCESS_KEY"]
 MINIO_SECRET_KEY = environ["MINIO_SECRET_KEY"]
 MINIO_BUCKET_NAME = environ['MINIO_BUCKET_NAME']
 
-ALLOWED_EXTENSIONS = ['txt', 'xml']
+ALLOWED_EXTENSIONS = ['txt']
 UPLOAD_PREFIX = 'upload/'
 PROCESSED_PREFIX = 'processed/'
 
@@ -80,34 +80,12 @@ def with_minio(fn):
     return fn_inner
 
 
-# @with_minio
-# def put_file(filename, contents, process_type, contents_length=None):
-#     if not isinstance(contents, BytesIO):
-#         if isinstance(contents, str):
-#             contents_length = len(contents)
-#             contents = bytes(contents, encoding='utf-8')
-#         else:
-#             contents = bytes(contents)
-#         contents = BytesIO(contents)
-#         if not contents_length:
-#             contents.seek(SEEK_END)
-#             contents_length = contents.tell()
-#             contents.seek(SEEK_SET)
-#         contents = BytesIO(contents)
-#     if not isinstance(process_type, BytesIO):
-#         if isinstance(process_type, str):
-#             process_type = bytes(contents, encoding='utf-8')
-#         else:
-#             process_type = bytes(process_type)
-#     return minioClient.put_object(MINIO_BUCKET_NAME, filename, contents, process_type,
-#                                   contents_length or len(contents))
-
 @with_minio
 def put_file(filename, contents, contents_length=None):
     if not isinstance(contents, BytesIO):
         if isinstance(contents, str):
-            contents_length = len(contents)
             contents = bytes(contents, encoding='utf-8')
+            contents_length = len(contents)
         else:
             contents = bytes(contents)
         contents = BytesIO(contents)
@@ -115,17 +93,15 @@ def put_file(filename, contents, contents_length=None):
             contents.seek(SEEK_END)
             contents_length = contents.tell()
             contents.seek(SEEK_SET)
-        # contents = BytesIO(contents)
     return minioClient.put_object(MINIO_BUCKET_NAME, filename, contents,
-                                  contents_length or len(contents))
+                                  contents_length)
 
-# @with_minio
-# def get_file(filename, process_type):
-#     return minioClient.get_object(MINIO_BUCKET_NAME, filename, process_type).data
 
 @with_minio
 def get_file(filename):
     return minioClient.get_object(MINIO_BUCKET_NAME, filename).data
+
+
 
 @with_minio
 def list_files(**kwargs):
@@ -149,30 +125,6 @@ def get_upload_form():
          <input type=submit value=Upload>
     </form>
     '''
-# def chose_module():
-#     return'''
-#     <!doctype html>
-#     <title>Select processing</title>
-#     <h1>Select processing</h1>
-#     <form method=post enctype=multipart/form-data>
-#       <p><input type="checkbox" name=type >
-#     </form>
-#     '''
-
-# def get_task_status(task_id, process_type):
-#     task = result.AsyncResult(str(task_id))
-#     if isinstance(task.result, BaseException):
-#         task_result = str(task.result)
-#     else:
-#         process_type, task_result = task.result
-#     return {
-#         "task_id": str(task.id),
-#         "ready": task.ready(),
-#         "status": task.status,
-#         "result": task_result,
-#         "error": str(task.traceback),
-#         "task_type": process_type
-#     }
 
 def get_task_status(task_id):
     task = result.AsyncResult(str(task_id))

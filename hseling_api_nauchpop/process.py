@@ -1,7 +1,7 @@
 from .topic_module.topic_classification import get_topic
 
 def process_data(data_to_process):
-    """Split all files contents and then combine unique words into resulting file.
+    """make topic modeling for text
     """
 
     for _, contents in data_to_process.items():
@@ -10,6 +10,7 @@ def process_data(data_to_process):
         else:
             text = contents
         result = get_topic(text)
-
+        print(result)
+        print(type(result))
     if result:
         yield None, result
