@@ -49,7 +49,7 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=('tests', 'app')),
-    package_data={'hseling_api_nauchpop':['hseling_api_nauchpop/topic_module/models/*.pkl']},
+    package_data={'hseling_api_nauchpop':['topic_module/models/*.pkl','rb_module/*.txt']},
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
