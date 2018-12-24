@@ -22,6 +22,5 @@ def process_rb(data_to_process):
         else:
             text = contents
         result = count_all_metrics(text)
-
     if result:
         yield None, result
