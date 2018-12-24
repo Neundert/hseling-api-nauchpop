@@ -216,11 +216,4 @@ def test_process_rb(input_data, expected_result):
     assert processed_data == expected_result
 
 
-def test_process_topic_bad_values():
-    with pytest.raises(AttributeError):
-        assert [contents for _, contents in process_topic({"test_topic": 1})]
 
-
-def test_process_rb_bad_values():
-    with pytest.raises(AttributeError):
-        assert [contents for _, contents in process_rb({"test_rb": 1})]
