@@ -26,21 +26,3 @@ def process_rb(data_to_process):
 
 
 
-
-
-#this is mock function for testing
-# def process_rb(data_to_process):
-#     result = set()
-#     for _, contents in data_to_process.items():
-#         if isinstance(contents, bytes):
-#             text = contents.decode('utf-8')
-#         else:
-#             text = contents
-#         #result = count_all_metric(text)
-#
-#         result |= set(text.split())
-#
-#     if result:
-#         yield None, '\n'.join(sorted(list(result)))
-#     # if result:
-#     #     yield None, ' '.join(result)

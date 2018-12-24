@@ -11,8 +11,5 @@ dist
 .env
 !.gitignore
 !.travis*
-<<<<<<< HEAD
 .idea
-=======
-.idea
->>>>>>> 4c2f49e19e585c59840f22daffc7a61156359cf7
+

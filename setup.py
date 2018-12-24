@@ -17,7 +17,8 @@ AUTHOR = 'Sergey Sobko'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '1.0.0'
 
-REQUIRED = ['requests', 'lxml', 'html5lib', 'beautifulsoup4', 'scrapy']
+REQUIRED = ['requests', 'lxml', 'html5lib', 'beautifulsoup4', 'scrapy',
+            'numpy', 'scipy', 'scikit-learn', 'pyphen']
 
 EXTRAS = {}
 
