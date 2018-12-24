@@ -5,6 +5,7 @@ from .rb_module.count_all import count_all_metrics
 def process_topic(data_to_process):
     """make topic modeling for text and readability metrics
     """
+    result = ""
     for _, contents in data_to_process.items():
         if isinstance(contents, bytes):
             text = contents.decode('utf-8')
@@ -16,6 +17,7 @@ def process_topic(data_to_process):
 
 
 def process_rb(data_to_process):
+    result = ""
     for _, contents in data_to_process.items():
         if isinstance(contents, bytes):
             text = contents.decode('utf-8')
