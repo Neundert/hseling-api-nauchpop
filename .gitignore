@@ -11,3 +11,5 @@ dist
 .env
 !.gitignore
 !.travis*
+.idea
+

@@ -9,7 +9,6 @@ from minio import Minio
 from minio.error import (ResponseError, BucketAlreadyOwnedByYou,
                          BucketAlreadyExists)
 
-
 CELERY_BROKER_URL = environ["CELERY_BROKER_URL"]
 CELERY_RESULT_BACKEND = environ["CELERY_RESULT_BACKEND"]
 
@@ -18,14 +17,14 @@ MINIO_ACCESS_KEY = environ["MINIO_ACCESS_KEY"]
 MINIO_SECRET_KEY = environ["MINIO_SECRET_KEY"]
 MINIO_BUCKET_NAME = environ['MINIO_BUCKET_NAME']
 
-ALLOWED_EXTENSIONS = ['txt', 'xml']
+ALLOWED_EXTENSIONS = ['txt']
 UPLOAD_PREFIX = 'upload/'
 PROCESSED_PREFIX = 'processed/'
 
 ERROR_NO_FILE_PART = "ERROR_NO_FILE_PART"
 ERROR_NO_SELECTED_FILE = "ERROR_NO_SELECTED_FILE"
 ERROR_NO_SUCH_FILE = "ERROR_NO_SUCH_FILE"
-ERROR_NO_QUERY_TYPE_SPECIFIED = "ERROR_NO_QUERY_TYPE_SPECIFIED"
+ERROR_NO_PROCESS_TYPE_SPECIFIED = "ERROR_NO_PROCESS_TYPE_SPECIFIED"
 
 ENDPOINT_ROOT = "ENDPOINT_ROOT"
 ENDPOINT_SCRAP = "ENDPOINT_SCRAP"
@@ -33,7 +32,6 @@ ENDPOINT_UPLOAD = "ENDPOINT_UPLOAD"
 ENDPOINT_PROCESS = "ENDPOINT_PROCESS"
 ENDPOINT_STATUS = "ENDPOINT_STATUS"
 ENDPOINT_QUERY = "ENDPOINT_QUERY"
-
 
 RESTRICTED_MODE = environ["RESTRICTED_MODE"]
 
@@ -84,8 +82,8 @@ def with_minio(fn):
 def put_file(filename, contents, contents_length=None):
     if not isinstance(contents, BytesIO):
         if isinstance(contents, str):
-            contents_length = len(contents)
             contents = bytes(contents, encoding='utf-8')
+            contents_length = len(contents)
         else:
             contents = bytes(contents)
         contents = BytesIO(contents)
@@ -94,7 +92,7 @@ def put_file(filename, contents, contents_length=None):
             contents_length = contents.tell()
             contents.seek(SEEK_SET)
     return minioClient.put_object(MINIO_BUCKET_NAME, filename, contents,
-                                  contents_length or len(contents))
+                                  contents_length)
 
 
 @with_minio
@@ -156,13 +154,12 @@ def save_file(upload_file):
 
 def add_processed_file(processed_file_id,
                        contents,
-                       extension=None,
-                       length=None):
+                       extension=None):
     if not processed_file_id:
         processed_file_id = str(uuid4())
     if extension:
         filename = PROCESSED_PREFIX + processed_file_id + ("." + extension)
     else:
         filename = ""
-    put_file(filename, contents, length)
+    put_file(filename, contents)
     return filename

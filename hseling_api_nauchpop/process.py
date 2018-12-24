@@ -1,14 +1,28 @@
-def process_data(data_to_process):
-    """Split all files contents and then combine unique words into resulting file.
-    """
-    result = set()
+from .topic_module.topic_classification import get_topic
+from .rb_module.count_all import count_all_metrics
 
+
+def process_topic(data_to_process):
+    """make topic modeling for text and readability metrics
+    """
+    result = ""
     for _, contents in data_to_process.items():
         if isinstance(contents, bytes):
             text = contents.decode('utf-8')
         else:
             text = contents
-        result |= set(text.split())
-
+        result = get_topic(text)
     if result:
-        yield None, '\n'.join(sorted(list(result)))
+        yield None, result
+
+
+def process_rb(data_to_process):
+    result = ""
+    for _, contents in data_to_process.items():
+        if isinstance(contents, bytes):
+            text = contents.decode('utf-8')
+        else:
+            text = contents
+        result = count_all_metrics(text)
+    if result:
+        yield None, result
