@@ -38,7 +38,6 @@ if not VERSION:
 else:
     about['__version__'] = VERSION
 
-
 setup(
     name=NAME,
     version=about['__version__'],
@@ -50,7 +49,7 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=('tests', 'app')),
-    package_data={'hseling_api_nauchpop':['topic_module/models/*.pkl','rb_module/*.txt']},
+    package_data={'hseling_api_nauchpop': ['topic_module/models/*.pkl', 'rb_module/*.txt']},
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,

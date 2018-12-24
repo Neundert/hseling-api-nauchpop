@@ -1,5 +1,7 @@
 from .topic_module.topic_classification import get_topic
 from .rb_module.count_all import count_all_metrics
+
+
 def process_topic(data_to_process):
     """make topic modeling for text and readability metrics
     """
@@ -12,6 +14,7 @@ def process_topic(data_to_process):
     if result:
         yield None, result
 
+
 def process_rb(data_to_process):
     for _, contents in data_to_process.items():
         if isinstance(contents, bytes):
@@ -22,6 +25,3 @@ def process_rb(data_to_process):
 
     if result:
         yield None, result
-
-
-

@@ -9,7 +9,6 @@ from minio import Minio
 from minio.error import (ResponseError, BucketAlreadyOwnedByYou,
                          BucketAlreadyExists)
 
-
 CELERY_BROKER_URL = environ["CELERY_BROKER_URL"]
 CELERY_RESULT_BACKEND = environ["CELERY_RESULT_BACKEND"]
 
@@ -33,7 +32,6 @@ ENDPOINT_UPLOAD = "ENDPOINT_UPLOAD"
 ENDPOINT_PROCESS = "ENDPOINT_PROCESS"
 ENDPOINT_STATUS = "ENDPOINT_STATUS"
 ENDPOINT_QUERY = "ENDPOINT_QUERY"
-
 
 RESTRICTED_MODE = environ["RESTRICTED_MODE"]
 
@@ -102,7 +100,6 @@ def get_file(filename):
     return minioClient.get_object(MINIO_BUCKET_NAME, filename).data
 
 
-
 @with_minio
 def list_files(**kwargs):
     return list(str(file_id.object_name) for file_id
@@ -126,6 +123,7 @@ def get_upload_form():
     </form>
     '''
 
+
 def get_task_status(task_id):
     task = result.AsyncResult(str(task_id))
     if isinstance(task.result, BaseException):
@@ -139,6 +137,7 @@ def get_task_status(task_id):
         "result": task_result,
         "error": str(task.traceback)
     }
+
 
 def save_file(upload_file):
     filename = UPLOAD_PREFIX + secure_filename(upload_file.filename)

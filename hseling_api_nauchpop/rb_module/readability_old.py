@@ -1,7 +1,9 @@
 import re
 import string
 from pyphen import Pyphen
+
 exclude = list(string.punctuation)
+
 
 def sentence_splitter(text):
     sent_list = re.split(' *[\.\?!][\'"\)\]]* ', text)
@@ -94,21 +96,23 @@ def get_simple_metrics(text):
     ADF = percent_syll(text)
     return [SL, WC, ASL, TC, ALPW, ALPS, SYC, ASYPW, ASYPS, DW, ADF]
 
+
 def stringer(text):
     stats = get_simple_metrics(text)
     sup = ('Количество предложений в тексте:', stats[0], 'Количество слов в тексте:', stats[1],
-          'Средняя длина предложений:', stats[2],
-          'Количество символов в тексте:', stats[3],
-          'Средняя длина слова:', stats[4],
-          'Средняя длина предложений в символах:', stats[5],
-          'Количество слогов в тексте:', stats[6],
-          'Среднее количество слогов в слове:', stats[7],
-          'Среднее количеcтво слогов в предложении:', stats[8],
-          'Количество сложных слов в тексте:', stats[9],
-          'Процент сложных слов в тексте', stats[10])
+           'Средняя длина предложений:', stats[2],
+           'Количество символов в тексте:', stats[3],
+           'Средняя длина слова:', stats[4],
+           'Средняя длина предложений в символах:', stats[5],
+           'Количество слогов в тексте:', stats[6],
+           'Среднее количество слогов в слове:', stats[7],
+           'Среднее количеcтво слогов в предложении:', stats[8],
+           'Количество сложных слов в тексте:', stats[9],
+           'Процент сложных слов в тексте', stats[10])
     llist = list(sup)
     conc = ' '.join(str(x) for x in llist)
     return conc
+
 
 def flesch_RE(text):
     ASL = avg_sentence_length(text)
@@ -116,42 +120,45 @@ def flesch_RE(text):
     FRE = 206.835 - float(1.3 * ASL) - float(60.6 * ASW)
     return round(FRE, 2)
 
+
 def flesch_kincaid_grade(text):
     ASL = avg_sentence_length(text)
     ASW = avg_syllab_per_word(text)
     FKRA = float(0.5 * ASL) + float(8.4 * ASW) - 15.59
     return round(FKRA, 2)
-    
-def smog_index(text): 
+
+
+def smog_index(text):
     if len(sentence_splitter(text)) >= 3:
-        SMOG = (1.043 * (30*(diffsyll(text)/len(sentence_splitter(text))))**.5) + 3.1291
+        SMOG = (1.043 * (30 * (diffsyll(text) / len(sentence_splitter(text)))) ** .5) + 3.1291
         return round(SMOG, 2)
     else:
         return 0
-        
-        
+
+
 def coleman_liau_index(text):
-    L = round(avg_letter_per_word(text)*100, 2)
-    S = round(avg_sent_per_word(text)*100, 2)
+    L = round(avg_letter_per_word(text) * 100, 2)
+    S = round(avg_sent_per_word(text) * 100, 2)
     CLI = float((0.058 * L) - (0.296 * S) - 15.8)
     return round(CLI, 2)
 
 
-def dale_chall_score(text): #т.к. делаем сложные слова как 4 слога, все ок 
+def dale_chall_score(text):  # т.к. делаем сложные слова как 4 слога, все ок
     word_count = len(text.split())
     count = word_count - diffsyll(text)
-    per = float(count)/float(word_count)*100
-    difficult_words = 100-per
-    if difficult_words > 5: #дальше идет адаптация: вместо 0,0496 0,062
+    per = float(count) / float(word_count) * 100
+    difficult_words = 100 - per
+    if difficult_words > 5:  # дальше идет адаптация: вместо 0,0496 0,062
         score = (0.1579 * difficult_words) + (0.062 * avg_sentence_length(text)) + 3.6365
     else:
         score = (0.1579 * difficult_words) + (0.062 * avg_sentence_length(text))
     return round(score, 2)
-    
-    
+
+
 def gunning_fog(text):
-    grade = 0.4*(avg_sentence_length(text) + percent_syll(text))
-    return round(grade,2)
+    grade = 0.4 * (avg_sentence_length(text) + percent_syll(text))
+    return round(grade, 2)
+
 
 def rb_vectors(text):
     FRE = flesch_RE(text)
@@ -161,6 +168,7 @@ def rb_vectors(text):
     DCH = dale_chall_score(text)
     GF = gunning_fog(text)
     return [FRE, FKG, SMOG, CLI, DCH, GF]
+
 
 def rb_stringer(text):
     rb = rb_vectors(text)

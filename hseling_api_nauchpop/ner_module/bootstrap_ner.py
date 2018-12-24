@@ -6,6 +6,7 @@ from flashtext import KeywordProcessor
 import re
 import os
 import pymorphy2
+
 morph = pymorphy2.MorphAnalyzer()
 
 
@@ -43,6 +44,7 @@ def _initialize_processor(words: List[str]) -> KeywordProcessor:
     processor = KeywordProcessor()
     processor.add_keywords_from_list(words)
     return processor
+
 
 # Define text processing functions
 
