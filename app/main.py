@@ -1,8 +1,4 @@
-from io import BytesIO
-from os.path import join, getsize
-
-from flask import Flask, jsonify, request, Response, send_file, make_response, redirect
-from logging import getLogger
+from flask import Flask, jsonify, request
 
 import boilerplate
 
@@ -10,7 +6,7 @@ from hseling_api_nauchpop.process import process_topic, process_rb
 
 ALLOWED_EXTENSIONS = ['txt']
 
-log = getLogger(__name__)
+# log = getLogger(__name__)
 
 app = Flask(__name__)
 app.config.update(
@@ -29,9 +25,9 @@ def task_topic(file_ids_list=None):
                             for file_id in file_ids_list
                             if (boilerplate.UPLOAD_PREFIX + file_id)
                             in files_to_process]
-    data_to_process = {file_id[len(boilerplate.UPLOAD_PREFIX):]:
-                           boilerplate.get_file(file_id)
-                       for file_id in files_to_process}
+    data_to_process = {
+        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
+        for file_id in files_to_process}
     processed_file_ids = list()
     for processed_file_id, contents in process_topic(data_to_process):
         processed_file_ids.append(
@@ -53,9 +49,10 @@ def task_rb(file_ids_list=None):
                             for file_id in file_ids_list
                             if (boilerplate.UPLOAD_PREFIX + file_id)
                             in files_to_process]
-    data_to_process = {file_id[len(boilerplate.UPLOAD_PREFIX):]:
-                           boilerplate.get_file(file_id)
-                       for file_id in files_to_process}
+    data_to_process = {
+        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
+        for file_id in
+        files_to_process}
     processed_file_ids = list()
     for processed_file_id, contents in process_rb(data_to_process):
         processed_file_ids.append(
@@ -120,7 +117,8 @@ def process_endpoint(file_ids=None):
                 pass
         modules_to_process = {}
         if not task_list:
-            return jsonify({'error': boilerplate.ERROR_NO_PROCESS_TYPE_SPECIFIED})
+            return jsonify(
+                {'error': boilerplate.ERROR_NO_PROCESS_TYPE_SPECIFIED})
         else:
             for t in task_list:
                 modules_to_process.update(t)

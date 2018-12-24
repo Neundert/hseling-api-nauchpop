@@ -6,7 +6,7 @@ exclude = list(string.punctuation)
 
 
 def sentence_splitter(text):
-    sent_list = re.split(' *[\.\?!][\'"\)\]]* ', text)
+    sent_list = re.split(r' *[\.\?!][\'"\)\]]* ', text)
     return sent_list
 
 
@@ -63,7 +63,8 @@ def avg_syllab_per_word(text):
 
 
 def avg_syllab_per_sent(text):
-    ASYPS = float(float(syllable_count(text)) / float(len(sentence_splitter(text))))
+    ASYPS = float(float(syllable_count(text)) /
+                  float(len(sentence_splitter(text))))
     return round(ASYPS, 2)
 
 
@@ -106,6 +107,7 @@ def print_simple_metrics(text):
     print('Средняя длина предложений в символах:', avg_letter_per_sent(text))
     print('Количество слогов в тексте:', syllable_count(text))
     print('Среднее количество слогов в слове:', avg_syllab_per_word(text))
-    print('Среднее количеcтво слогов в предложении:', avg_syllab_per_sent(text))
+    print('Среднее количеcтво слогов в предложении:',
+          avg_syllab_per_sent(text))
     print('Количество сложных слов в тексте:', diffsyll(text))
     print('Процент сложных слов в тексте', percent_syll(text))

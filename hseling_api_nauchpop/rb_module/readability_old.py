@@ -6,7 +6,7 @@ exclude = list(string.punctuation)
 
 
 def sentence_splitter(text):
-    sent_list = re.split(' *[\.\?!][\'"\)\]]* ', text)
+    sent_list = re.split(r' *[\.\?!][\'"\)\]]* ', text)
     return sent_list
 
 
@@ -63,7 +63,8 @@ def avg_syllab_per_word(text):
 
 
 def avg_syllab_per_sent(text):
-    ASYPS = float(float(syllable_count(text)) / float(len(sentence_splitter(text))))
+    ASYPS = float(float(syllable_count(text)) /
+                  float(len(sentence_splitter(text))))
     return round(ASYPS, 2)
 
 
@@ -99,7 +100,8 @@ def get_simple_metrics(text):
 
 def stringer(text):
     stats = get_simple_metrics(text)
-    sup = ('Количество предложений в тексте:', stats[0], 'Количество слов в тексте:', stats[1],
+    sup = ('Количество предложений в тексте:', stats[0],
+           'Количество слов в тексте:', stats[1],
            'Средняя длина предложений:', stats[2],
            'Количество символов в тексте:', stats[3],
            'Средняя длина слова:', stats[4],
@@ -130,7 +132,8 @@ def flesch_kincaid_grade(text):
 
 def smog_index(text):
     if len(sentence_splitter(text)) >= 3:
-        SMOG = (1.043 * (30 * (diffsyll(text) / len(sentence_splitter(text)))) ** .5) + 3.1291
+        SMOG = (1.043 * (30 * (diffsyll(text) /
+                               len(sentence_splitter(text)))) ** .5) + 3.1291
         return round(SMOG, 2)
     else:
         return 0
@@ -149,9 +152,11 @@ def dale_chall_score(text):  # т.к. делаем сложные слова к�
     per = float(count) / float(word_count) * 100
     difficult_words = 100 - per
     if difficult_words > 5:  # дальше идет адаптация: вместо 0,0496 0,062
-        score = (0.1579 * difficult_words) + (0.062 * avg_sentence_length(text)) + 3.6365
+        score = (0.1579 * difficult_words) + \
+                (0.062 * avg_sentence_length(text)) + 3.6365
     else:
-        score = (0.1579 * difficult_words) + (0.062 * avg_sentence_length(text))
+        score = (0.1579 * difficult_words) + \
+                (0.062 * avg_sentence_length(text))
     return round(score, 2)
 
 

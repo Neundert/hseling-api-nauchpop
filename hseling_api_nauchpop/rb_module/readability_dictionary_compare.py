@@ -1,7 +1,8 @@
 import re
 import pymorphy2 as pm
 
-commons = open('hseling_api_nauchpop/rb_module/common_lemmas.txt', 'r', encoding='utf-8')
+commons = open('hseling_api_nauchpop/rb_module/common_lemmas.txt',
+               'r', encoding='utf-8')
 commons = list(map(lambda x: x.strip(), commons))
 
 rudes = open('hseling_api_nauchpop/rb_module/rude.txt', 'r', encoding='utf-8')
@@ -18,9 +19,11 @@ morph = pm.MorphAnalyzer()
 
 
 def morphy_words(text):
-    nolinks = ' '.join([word for word in text.split() if (not re.findall('https?://|\w\.\w', word))])  # удалили ссылки
-    clean_line = re.sub('[\W\d_-]+', ' ', nolinks.lower().strip())
-    ws = re.split(' +', clean_line)
+    nolinks = ' '.join([word for word in text.split() if
+                        (not re.findall(r'https?://|\w\.\w',
+                                        word))])  # удалили ссылки
+    clean_line = re.sub(r'[\W\d_-]+', ' ', nolinks.lower().strip())
+    ws = re.split(r' +', clean_line)
     return [morph.parse(w)[0].normal_form for w in ws]
 
 
@@ -56,15 +59,18 @@ def talks_compare(text):  # сраниваем текст со списком о
 
 def measure_find(text):
     words = text.split(' ')
-    prefixes = ['дека', 'гекто', 'кило', 'мега', 'гига', 'тера', 'пета', 'экса', 'зетта', 'иотта', 'деци', 'санти',
-                'милли', 'микро', 'нано', 'пико', 'фемто', 'атто', 'зепто', 'иокто']
-    reg = '|'.join(['{}\w.*'.format(prefix) for prefix in prefixes])
+    prefixes = ['дека', 'гекто', 'кило', 'мега', 'гига',
+                'тера', 'пета', 'экса', 'зетта', 'иотта', 'деци', 'санти',
+                'милли', 'микро', 'нано', 'пико', 'фемто', 'атто',
+                'зепто', 'иокто']
+    reg = r'|'.join([r'{}\w.*'.format(prefix) for prefix in prefixes])
     summo = len([word for word in words if re.findall(reg, word)])
     text_meas = round((float(summo) / float(len(text.split()))) * 100, 2)
     return text_meas
 
 
-def any_comparor(text, vocabular):  # если нужно будет добавить еще один словарь не изменяя модуль
+def any_comparor(text, vocabular):
+    # если нужно будет добавить еще один словарь не изменяя модуль
     text_len = len(text.split())
     common_words = 0
     for word in text.split():

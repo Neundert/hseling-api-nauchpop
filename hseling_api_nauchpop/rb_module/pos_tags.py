@@ -5,18 +5,19 @@ from string import punctuation
 
 morph = pymorphy2.MorphAnalyzer()
 
-#предобработка
+# предобработка
+
 
 def strip_punctuation(s):
     return ''.join(c for c in s if c not in punctuation)
-    
-    
+
+
 def tag_pymorphy(text):
-    
+
     def find_tag(raw_tag):
         tag = re.findall('[A-Z]+', raw_tag)
         return tag[0]
-    
+
     words = text.split()
     tags = [find_tag(str(morph.parse(w)[0].tag)) for w in words]
     tagged = []
@@ -27,10 +28,10 @@ def tag_pymorphy(text):
         else:
             tagged.append('(' + tag + ')')
     return ' '.join(tagged)
-     
 
-#подсчет частей речи
-    
+
+# подсчет частей речи
+
 def count_all_pos(text):
     tagged = tag_pymorphy(text)
     words = tagged.split(' ')
@@ -44,14 +45,15 @@ def count_all_pos(text):
     all_verbs = round(((len(verbs))/float(text_len))*100, 2)
     all_preps = round(((len(preps))/float(text_len))*100, 2)
     all_conjs = round(((len(conjs))/float(text_len))*100, 2)
-    all_adjfs = round(((len(adjs))/float(text_len))*100, 2) 
+    all_adjfs = round(((len(adjs))/float(text_len))*100, 2)
     return [all_nouns, all_verbs, all_preps, all_conjs, all_adjfs]
-    
+
+
 def pos_stringer(text):
     pos = count_all_pos(text)
     sup = ('NOUNS:', pos[0], 'VERBS:', pos[1],
-    'PREPOSITIONS:', pos[2], 'CONJS:', pos[3],
-    'ADJECTIVES:', pos[4])
+           'PREPOSITIONS:', pos[2], 'CONJS:', pos[3],
+           'ADJECTIVES:', pos[4])
     llist = list(sup)
     pos_conc = ' '.join(str(x) for x in llist)
     return pos_conc

@@ -3,10 +3,8 @@
 
 import io
 import os
-import sys
-from shutil import rmtree
 
-from setuptools import find_packages, setup, Command
+from setuptools import find_packages, setup
 
 # Package meta-data.
 NAME = 'hseling-api-nauchpop'
@@ -49,7 +47,8 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=('tests', 'app')),
-    package_data={'hseling_api_nauchpop': ['topic_module/models/*.pkl', 'rb_module/*.txt']},
+    package_data={'hseling_api_nauchpop': ['topic_module/models/*.pkl',
+                                           'rb_module/*.txt']},
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
