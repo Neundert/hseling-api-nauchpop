@@ -1,6 +1,5 @@
 # Imports
 import pickle
-
 import re
 import pymorphy2
 from stop_words import get_stop_words
@@ -10,7 +9,7 @@ def load_model(filename):
 	with open(filename, 'rb') as file:
 		model = pickle.load(file)
 	return model
-#hseling_api_nauchpop/topic_module/
+
 vect_model = load_model('hseling_api_nauchpop/topic_module/models/model_vect.pkl')
 reduce_model = load_model('hseling_api_nauchpop/topic_module/models/model_reduce.pkl')
 classify_model = load_model('hseling_api_nauchpop/topic_module/models/model_class.pkl')
@@ -24,9 +23,6 @@ def preprocess(text):
 	
 def vectorize(text, model):
 	return model.transform(text)
-	
-# def reduce_dim(text_vec_matrix, model):
-#	return model.transform(text_vec_matrix)
 
 def classify(text_vec, model):
 	return model.predict(text_vec.reshape(1, -1))

@@ -23,23 +23,19 @@ def avg_sentence_length(text):
 def avg_sent_per_word(text):
     ASPW = float(text_len_sent(text)/text_len_words(text))
     return round(ASPW, 2)
-    
-    
+
 def char_count(text, ignore_spaces=True):
     if ignore_spaces:
         text_chars = text.replace(" ", "")
     return len(text_chars) 
 
-    
 def avg_letter_per_word(text):
     ALPW = float(float(char_count(text))/float(len(text.split())))
     return round(ALPW, 2)
-    
 
 def avg_letter_per_sent(text):
     ALPS = float(float(char_count(text))/float(len(sentence_splitter(text))))
     return round(ALPS, 2)
-    
 
 def syllable_count(text): 
     text = text.lower()
@@ -50,12 +46,10 @@ def syllable_count(text):
         word_hyphenated = dic.inserted(word)
         count += max(1, word_hyphenated.count("-") + 1)
     return count
-    
-    
+
 def avg_syllab_per_word(text):
     ASYPW = float(float(syllable_count(text))/float(len(text.split())))
     return round(ASYPW, 2)
-    
 
 def avg_syllab_per_sent(text):
     ASYPS = float(float(syllable_count(text))/float(len(sentence_splitter(text))))
@@ -73,8 +67,7 @@ def diffsyll(text):
 def percent_syll(text):
     perc_diff = float(float(diffsyll(text)))/float(len(text.split()))*100
     return round(perc_diff, 2) 
-    
-      
+
 def get_simple_metrics(text):
     SL = len(sentence_splitter(text))
     WC = len(text.split())
@@ -88,10 +81,7 @@ def get_simple_metrics(text):
     DW = diffsyll(text)
     ADF = percent_syll(text)
     return [SL, WC, ASL, TC, ALPW, ALPS, SYC, ASYPW, ASYPS, DW, ADF] 
-    
 
-
-    
 def print_simple_metrics(text):
     print('Количество предложений в тексте:', len(sentence_splitter(text)))
     print('Количество слов в тексте:', len(text.split()))
@@ -104,11 +94,3 @@ def print_simple_metrics(text):
     print('Среднее количеcтво слогов в предложении:', avg_syllab_per_sent(text))
     print('Количество сложных слов в тексте:', diffsyll(text))
     print('Процент сложных слов в тексте', percent_syll(text))
-    
-
-
-       
-       
-    
-
-

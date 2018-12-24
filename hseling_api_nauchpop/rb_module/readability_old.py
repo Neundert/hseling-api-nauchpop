@@ -1,7 +1,6 @@
 import re
 import string
 from pyphen import Pyphen
-#import statistical_metrics as ksms #файл statistical_metrics из модуля
 exclude = list(string.punctuation)
 
 def sentence_splitter(text):
@@ -120,11 +119,6 @@ def flesch_RE(text):
 def flesch_kincaid_grade(text):
     ASL = avg_sentence_length(text)
     ASW = avg_syllab_per_word(text)
-    #английский язык!
-    #FKRA = float(0.39 * ASL) + float(11.8 * ASW) - 15.59
-    #русский
-    #FKRA = float(0.49 * ASL) + float(7.3 * ASW) - 16.59
-    #Оборнева
     FKRA = float(0.5 * ASL) + float(8.4 * ASW) - 15.59
     return round(FKRA, 2)
     

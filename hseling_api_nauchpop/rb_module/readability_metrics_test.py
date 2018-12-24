@@ -28,10 +28,4 @@ class TestReadabiliryMetrics(unittest.TestCase):
         expected = 60
         res = rm.char_count(text)
         self.assertEqual(res, expected)
-        
-        
-    
-
-
-
 unittest.main()    
