@@ -95,8 +95,8 @@ def list_files_endpoint():
     return jsonify({'file_ids': boilerplate.list_files(recursive=True)})
 
 
-@app.route('/process', methods=['GET', 'POST'])
-@app.route("/process/<file_ids>")
+@app.route('/process')
+@app.route("/process/<file_ids>",methods=['GET', 'POST'])
 def process_endpoint(file_ids=None):
     if request.method == 'POST':
         process_types = request.data
