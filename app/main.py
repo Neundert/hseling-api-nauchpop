@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 
 import boilerplate
 
-from hseling_api_nauchpop.process import process_topic, process_rb
+from hseling_api_nauchpop.process import process_topic, process_rb, process_term
 
 ALLOWED_EXTENSIONS = ['txt']
 
@@ -65,6 +65,31 @@ def task_rb(file_ids_list=None):
     return processed_file_ids
 
 
+@celery.task
+def task_term(file_ids_list=None):
+    files_to_process = boilerplate.list_files(recursive=True,
+                                              prefix=boilerplate.UPLOAD_PREFIX)
+    if file_ids_list:
+        files_to_process = [boilerplate.UPLOAD_PREFIX + file_id
+                            for file_id in file_ids_list
+                            if (boilerplate.UPLOAD_PREFIX + file_id)
+                            in files_to_process]
+    data_to_process = {
+        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
+        for file_id in
+        files_to_process}
+    processed_file_ids = list()
+    for processed_file_id, contents in process_term(data_to_process):
+        processed_file_ids.append(
+            boilerplate.add_processed_file(
+                processed_file_id,
+                contents,
+                extension='txt'
+            ))
+
+    return processed_file_ids
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_endpoint():
     if request.method == 'POST':
@@ -96,7 +121,7 @@ def list_files_endpoint():
 
 
 @app.route('/process')
-@app.route("/process/<file_ids>",methods=['GET', 'POST'])
+@app.route("/process/<file_ids>", methods=['GET', 'POST'])
 def process_endpoint(file_ids=None):
     if request.method == 'POST':
         process_types = request.data
@@ -113,12 +138,19 @@ def process_endpoint(file_ids=None):
                 task_2 = task_rb.delay(file_ids_list)
                 task_dict_2 = {"task_2_id": str(task_2)}
                 task_list.append(task_dict_2)
+            elif process_type == 'term':
+                task_3 = task_term.delay(file_ids_list)
+                task_dict_3 = {"task_3_id": str(task_3)}
+                task_list.append(task_dict_3)
             else:
                 pass
         modules_to_process = {}
         if not task_list:
             return jsonify(
                 {'error': boilerplate.ERROR_NO_PROCESS_TYPE_SPECIFIED})
+        elif not file_ids_list:
+            return jsonify(
+                {'error': boilerplate.ERROR_NO_SUCH_FILE})
         else:
             for t in task_list:
                 modules_to_process.update(t)

@@ -16,7 +16,8 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '1.0.0'
 
 REQUIRED = ['requests', 'lxml', 'html5lib', 'beautifulsoup4', 'scrapy',
-            'numpy', 'scipy', 'scikit-learn', 'pyphen']
+            'numpy', 'scipy', 'scikit-learn', 'pyphen', 'pandas',
+            'enum34', 'rutermextract', 'nltk', 'pymystem3']
 
 EXTRAS = {}
 
@@ -48,7 +49,8 @@ setup(
     url=URL,
     packages=find_packages(exclude=('tests', 'app')),
     package_data={'hseling_api_nauchpop': ['topic_module/models/*.pkl',
-                                           'rb_module/*.txt']},
+                                           'rb_module/*.txt',
+                                           'term_extraction/filters/*.txt']},
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,

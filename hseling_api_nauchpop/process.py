@@ -1,5 +1,6 @@
 from .topic_module.topic_classification import get_topic
 from .rb_module.count_all import count_all_metrics
+from .term_extraction.term_extractor import get_terms
 
 
 def process_topic(data_to_process):
@@ -24,5 +25,17 @@ def process_rb(data_to_process):
         else:
             text = contents
         result = count_all_metrics(text)
+    if result:
+        yield None, result
+
+
+def process_term(data_to_process):
+    result = ""
+    for _, contents in data_to_process.items():
+        if isinstance(contents, bytes):
+            text = contents.decode('utf-8')
+        else:
+            text = contents
+        result = get_terms(text)
     if result:
         yield None, result
