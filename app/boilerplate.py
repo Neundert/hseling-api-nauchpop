@@ -2,6 +2,7 @@ from os import environ
 from io import BytesIO, SEEK_END, SEEK_SET
 from uuid import uuid4
 
+
 from celery import Celery, result
 from werkzeug.utils import secure_filename
 
