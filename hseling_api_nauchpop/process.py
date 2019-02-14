@@ -1,7 +1,7 @@
 from .topic_module.topic_classification import get_topic
 from .rb_module.count_all import count_all_metrics
 from .term_extraction.term_extractor import get_terms
-from .ner_module.parse_tomita_xml import launch_wo_tomita
+from .ner_module.ner_parser import extract_ner
 
 
 def process_topic(data_to_process):
@@ -49,6 +49,6 @@ def process_ner(data_to_process):
             text = contents.decode('utf-8')
         else:
             text = contents
-        result = launch_wo_tomita(text)
+        result = extract_ner(text)
     if result:
         yield None, result

@@ -5,8 +5,8 @@ import bs4 as bs
 from flashtext import KeywordProcessor
 import re
 import os
+import pandas as pd
 import pymorphy2
-
 morph = pymorphy2.MorphAnalyzer()
 
 
@@ -19,7 +19,7 @@ def _slurp(path):
 
 
 def _slurp_lines(path):
-    with open(path, 'r') as fo:
+    with open(path) as fo:
         return [line.strip() for line in fo.readlines()]
 
 
@@ -40,13 +40,12 @@ def _initialize_processor(words: List[str]) -> KeywordProcessor:
     processor.add_keywords_from_list(words)
     return processor
 
-
 # Define text processing functions
 
 
 def _parse_xml(xml_output):
     '''Parses xml output from tomita.
-    Returns a list of raw names.
+    Returns a list of raw names. 
     Names require further processing. '''
     xml = bs.BeautifulSoup(xml_output, 'lxml')
     names = xml.find_all('name')
@@ -73,16 +72,18 @@ def _delete_erroneous_words(names: list, kword_processor):
     return potential_names
 
 
-def launch_wo_tomita(user_text: str):
-    def process(user_text: str):
-        return ' '.join(re.findall(r'[А-ЯЁа-яё]+', user_text))
-
-    text = process(user_text)
-    names = []
+def parse_user_text(user_text: str) -> List[str]:
+    '''Executes the whole pipeline from xml to complete
+    names list '''
+    xml_output = _slurp('hseling_api_nauchpop/tomita-parser/build/bin/names.xml')
+    names = _parse_xml(xml_output)
+    names = _delete_erroneous_words(names, lemmas_processor)
+    names = _delete_erroneous_words(names, geo_processor)
     for name in corpora_names:
-        if name in text:
-            names.append(name)
-    return ','.join(names)
+        if name in user_text:
+            if name not in names:
+                names.append(name)
+    return names
 
 
 # Import required files and word lists.
