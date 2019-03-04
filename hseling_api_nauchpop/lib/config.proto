@@ -2,7 +2,7 @@ encoding "utf8";
 
 
 TTextMinerConfig {
-  Dictionary = "dic.gzt"; 
+  Dictionary = "dic.gzt";
   Articles = [
     { Name = "sci_names" } 
   ]

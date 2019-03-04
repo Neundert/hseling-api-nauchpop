@@ -1,7 +1,8 @@
 import subprocess
 
-def launch_tomita(user_text: str) -> None:
-    command = 'echo "'+user_text+'" | \
-    /hseling_api_nauchpop/tomita-parser/build/bin/tomita-parser /hseling_api_nauchpop/tomita-parser/build/bin/config.proto'
 
-    subprocess.call(command, shell=True) 
+def launch_tomita(user_text: str) -> int:
+    command_2 = 'cd /app/hseling_api_nauchpop/ner_module/tomita-parser/build/bin &&' \
+                ' echo "'+user_text+'" | ./tomita-parser config.proto'
+    code = subprocess.call(command_2, shell=True)
+    return code
