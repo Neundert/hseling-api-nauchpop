@@ -78,7 +78,7 @@ def parse_user_text(user_text: str) -> List[str]:
     names = _delete_erroneous_words(names, lemmas_processor)
     names = _delete_erroneous_words(names, geo_processor)
     for name in corpora_names:
-        regex = re.compile('(?<=\W)%s(?=\W)' % name)
+        regex = re.compile(r'(?<=\W)%s(?=\W)' % name)
         if bool(regex.search(user_text)):
             names.append(name)
     return names

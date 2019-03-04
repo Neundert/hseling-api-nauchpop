@@ -26,7 +26,7 @@ def markup_ner(user_text: str) -> None:
     for web application'''
     def tag_names(user_text: str, names: list):
         search_pattern = '|'.join(names)
-        replace_pattern = '<\&\g<0>!\&'
+        replace_pattern = r'<\&\g<0>!\&'
         return re.sub(search_pattern, replace_pattern, user_text)
 
     launch_tomita(user_text)
