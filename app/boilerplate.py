@@ -2,6 +2,7 @@ from os import environ
 from io import BytesIO, SEEK_END, SEEK_SET
 from uuid import uuid4
 
+
 from celery import Celery, result
 from werkzeug.utils import secure_filename
 
@@ -20,6 +21,10 @@ MINIO_BUCKET_NAME = environ['MINIO_BUCKET_NAME']
 ALLOWED_EXTENSIONS = ['txt']
 UPLOAD_PREFIX = 'upload/'
 PROCESSED_PREFIX = 'processed/'
+NER_PREFIX = 'ner_'
+TOPIC_PREFIX = 'topic_'
+RB_PREFIX = 'rb_'
+TERM_PREFIX = 'term_'
 
 ERROR_NO_FILE_PART = "ERROR_NO_FILE_PART"
 ERROR_NO_SELECTED_FILE = "ERROR_NO_SELECTED_FILE"
@@ -152,13 +157,14 @@ def save_file(upload_file):
     }
 
 
-def add_processed_file(processed_file_id,
+def add_processed_file(module_nickname,
+                       processed_file_id,
                        contents,
                        extension=None):
     if not processed_file_id:
         processed_file_id = str(uuid4())
     if extension:
-        filename = PROCESSED_PREFIX + processed_file_id + ("." + extension)
+        filename = PROCESSED_PREFIX + module_nickname + processed_file_id + ("." + extension)
     else:
         filename = ""
     put_file(filename, contents)

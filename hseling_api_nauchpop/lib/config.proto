@@ -1,0 +1,15 @@
+encoding "utf8"; 
+
+
+TTextMinerConfig {
+  Dictionary = "dic.gzt";
+  Articles = [
+    { Name = "sci_names" } 
+  ]
+  Facts = [
+    { Name = "Person" }]
+
+ Output = {
+      File = "names.xml";
+      Format = xml; }
+}

@@ -12,6 +12,8 @@ x-common-variables: &common-variables
 services:
   hse-api-web:
     build: .
+    volumes:
+    - api:/api
     ports:
       - "80:80"
     links:
@@ -54,4 +56,4 @@ services:
 
 volumes:
   data:
-
+  api:

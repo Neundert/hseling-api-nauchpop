@@ -1,8 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 
 import boilerplate
 
-from hseling_api_nauchpop.process import process_topic, process_rb, process_term
+from hseling_api_nauchpop.process import process_topic,\
+    process_rb, process_term, process_ner
 
 ALLOWED_EXTENSIONS = ['txt']
 
@@ -32,6 +33,7 @@ def task_topic(file_ids_list=None):
     for processed_file_id, contents in process_topic(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.TOPIC_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
@@ -57,6 +59,7 @@ def task_rb(file_ids_list=None):
     for processed_file_id, contents in process_rb(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.RB_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
@@ -82,6 +85,32 @@ def task_term(file_ids_list=None):
     for processed_file_id, contents in process_term(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.TERM_PREFIX,
+                processed_file_id,
+                contents,
+                extension='txt'
+            ))
+
+    return processed_file_ids
+
+
+@celery.task
+def task_ner(file_ids_list=None):
+    files_to_process = boilerplate.list_files(recursive=True,
+                                              prefix=boilerplate.UPLOAD_PREFIX)
+    if file_ids_list:
+        files_to_process = [boilerplate.UPLOAD_PREFIX + file_id
+                            for file_id in file_ids_list
+                            if (boilerplate.UPLOAD_PREFIX + file_id)
+                            in files_to_process]
+    data_to_process = {
+        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
+        for file_id in files_to_process}
+    processed_file_ids = list()
+    for processed_file_id, contents in process_ner(data_to_process):
+        processed_file_ids.append(
+            boilerplate.add_processed_file(
+                boilerplate.NER_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
@@ -111,7 +140,8 @@ def upload_endpoint():
 @app.route('/files/<path:file_id>')
 def get_file_endpoint(file_id):
     if file_id in boilerplate.list_files(recursive=True):
-        return boilerplate.get_file(file_id)
+        contents = boilerplate.get_file(file_id)
+        return Response(contents, mimetype='text/plain')
     return jsonify({'error': boilerplate.ERROR_NO_SUCH_FILE})
 
 
@@ -142,6 +172,10 @@ def process_endpoint(file_ids=None):
                 task_3 = task_term.delay(file_ids_list)
                 task_dict_3 = {"task_3_id": str(task_3)}
                 task_list.append(task_dict_3)
+            elif process_type == 'ner':
+                task_4 = task_ner.delay(file_ids_list)
+                task_dict_4 = {"task_4_id": str(task_4)}
+                task_list.append(task_dict_4)
             else:
                 pass
         modules_to_process = {}

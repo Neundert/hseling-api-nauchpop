@@ -1,6 +1,7 @@
 import pytest
 
-from hseling_api_nauchpop.process import process_topic, process_rb, process_term
+from hseling_api_nauchpop.process import process_topic, process_rb,\
+    process_term, process_ner
 
 
 test_data_1 = [
@@ -281,6 +282,22 @@ test_data_3 = [
                                                               " корт, клуб, игра, гребля, буфетчик, альбердь"])
 ]
 
+test_data_4 = [
+    ({}, []),
+    ({"test_tomita.txt": "в рамках «Дня биологии» ИБХ РАН рассказала Анастасия Сычева аспирант ИБХ РАН."},
+     ['tomita, doesnt work']),
+    ({"test_tomita.txt": b"\xd0\xb2 \xd1\x80\xd0\xb0\xd0\xbc\xd0\xba\xd0\xb0\xd1\x85"
+                         b" \xc2\xab\xd0\x94\xd0\xbd\xd1\x8f "
+                         b"\xd0\xb1\xd0\xb8\xd0\xbe\xd0\xbb\xd0\xbe\xd0\xb3\xd0\xb8\xd0\xb8\xc2\xbb"
+                         b" \xd0\x98\xd0\x91\xd0\xa5 \xd0\xa0\xd0\x90\xd0\x9d"
+                         b" \xd1\x80\xd0\xb0\xd1\x81\xd1\x81\xd0\xba\xd0\xb0\xd0\xb7\xd0\xb0\xd0\xbb\xd0\xb0"
+                         b" \xd0\x90\xd0\xbd\xd0\xb0\xd1\x81\xd1\x82\xd0\xb0\xd1\x81\xd0\xb8\xd1\x8f"
+                         b" \xd0\xa1\xd1\x8b\xd1\x87\xd0\xb5\xd0\xb2\xd0\xb0"
+                         b" \xd0\xb0\xd1\x81\xd0\xbf\xd0\xb8\xd1\x80\xd0\xb0\xd0\xbd\xd1\x82"
+                         b" \xd0\x98\xd0\x91\xd0\xa5 \xd0\xa0\xd0\x90\xd0\x9d."},
+     ['tomita, doesnt work'])
+]
+
 
 @pytest.mark.parametrize("input_data, expected_result", test_data_1)
 def test_process_topic(input_data, expected_result):
@@ -297,4 +314,10 @@ def test_process_rb(input_data, expected_result):
 @pytest.mark.parametrize("input_data, expected_result", test_data_3)
 def test_process_term(input_data, expected_result):
     processed_data = [contents for _, contents in process_term(input_data)]
+    assert processed_data == expected_result
+
+
+@pytest.mark.parametrize("input_data, expected_result", test_data_4)
+def test_process_ner(input_data, expected_result):
+    processed_data = [contents for _, contents in process_ner(input_data)]
     assert processed_data == expected_result
