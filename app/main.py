@@ -33,6 +33,7 @@ def task_topic(file_ids_list=None):
     for processed_file_id, contents in process_topic(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.TOPIC_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
@@ -58,6 +59,7 @@ def task_rb(file_ids_list=None):
     for processed_file_id, contents in process_rb(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.RB_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
@@ -83,6 +85,7 @@ def task_term(file_ids_list=None):
     for processed_file_id, contents in process_term(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.TERM_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
@@ -107,6 +110,7 @@ def task_ner(file_ids_list=None):
     for processed_file_id, contents in process_ner(data_to_process):
         processed_file_ids.append(
             boilerplate.add_processed_file(
+                boilerplate.NER_PREFIX,
                 processed_file_id,
                 contents,
                 extension='txt'
