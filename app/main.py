@@ -19,16 +19,7 @@ celery = boilerplate.make_celery(app)
 
 @celery.task
 def task_topic(file_ids_list=None):
-    files_to_process = boilerplate.list_files(recursive=True,
-                                              prefix=boilerplate.UPLOAD_PREFIX)
-    if file_ids_list:
-        files_to_process = [boilerplate.UPLOAD_PREFIX + file_id
-                            for file_id in file_ids_list
-                            if (boilerplate.UPLOAD_PREFIX + file_id)
-                            in files_to_process]
-    data_to_process = {
-        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
-        for file_id in files_to_process}
+    data_to_process = boilerplate.get_process_data(file_ids_list)
     processed_file_ids = list()
     for processed_file_id, contents in process_topic(data_to_process):
         processed_file_ids.append(
@@ -44,17 +35,7 @@ def task_topic(file_ids_list=None):
 
 @celery.task
 def task_rb(file_ids_list=None):
-    files_to_process = boilerplate.list_files(recursive=True,
-                                              prefix=boilerplate.UPLOAD_PREFIX)
-    if file_ids_list:
-        files_to_process = [boilerplate.UPLOAD_PREFIX + file_id
-                            for file_id in file_ids_list
-                            if (boilerplate.UPLOAD_PREFIX + file_id)
-                            in files_to_process]
-    data_to_process = {
-        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
-        for file_id in
-        files_to_process}
+    data_to_process = boilerplate.get_process_data(file_ids_list)
     processed_file_ids = list()
     for processed_file_id, contents in process_rb(data_to_process):
         processed_file_ids.append(
@@ -70,17 +51,7 @@ def task_rb(file_ids_list=None):
 
 @celery.task
 def task_term(file_ids_list=None):
-    files_to_process = boilerplate.list_files(recursive=True,
-                                              prefix=boilerplate.UPLOAD_PREFIX)
-    if file_ids_list:
-        files_to_process = [boilerplate.UPLOAD_PREFIX + file_id
-                            for file_id in file_ids_list
-                            if (boilerplate.UPLOAD_PREFIX + file_id)
-                            in files_to_process]
-    data_to_process = {
-        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
-        for file_id in
-        files_to_process}
+    data_to_process = boilerplate.get_process_data(file_ids_list)
     processed_file_ids = list()
     for processed_file_id, contents in process_term(data_to_process):
         processed_file_ids.append(
@@ -96,16 +67,7 @@ def task_term(file_ids_list=None):
 
 @celery.task
 def task_ner(file_ids_list=None):
-    files_to_process = boilerplate.list_files(recursive=True,
-                                              prefix=boilerplate.UPLOAD_PREFIX)
-    if file_ids_list:
-        files_to_process = [boilerplate.UPLOAD_PREFIX + file_id
-                            for file_id in file_ids_list
-                            if (boilerplate.UPLOAD_PREFIX + file_id)
-                            in files_to_process]
-    data_to_process = {
-        file_id[len(boilerplate.UPLOAD_PREFIX):]: boilerplate.get_file(file_id)
-        for file_id in files_to_process}
+    data_to_process = boilerplate.get_process_data(file_ids_list)
     processed_file_ids = list()
     for processed_file_id, contents in process_ner(data_to_process):
         processed_file_ids.append(
@@ -122,18 +84,20 @@ def task_ner(file_ids_list=None):
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_endpoint():
     if request.method == 'POST':
-
-        if 'file' not in request.files:
-            return jsonify({"error": boilerplate.ERROR_NO_FILE_PART})
-        upload_file = request.files['file']
+        uploaded_files = request.files.getlist("file[]")
+        # upload_file = request.files['file']
         # make upload for few files
-        # uploaded_files = flask.request.files.getlist("file[]")
-        if upload_file.filename == '':
-            return jsonify({"error": boilerplate.ERROR_NO_SELECTED_FILE})
-        if upload_file and boilerplate.allowed_file(
-                upload_file.filename,
-                allowed_extensions=ALLOWED_EXTENSIONS):
-            return jsonify(boilerplate.save_file(upload_file))
+        result_upload_file = {}
+        for num, upload_file in enumerate(uploaded_files):
+            if uploaded_files[num].filename == '':
+                return jsonify({"error": boilerplate.ERROR_NO_SELECTED_FILE})
+            if uploaded_files[num] and boilerplate.allowed_file(
+                    uploaded_files[num].filename,
+                    allowed_extensions=ALLOWED_EXTENSIONS):
+                result_done = boilerplate.save_file(uploaded_files[num])
+                result = {str(num): result_done}
+                result_upload_file.update(result)
+        return jsonify(result_upload_file)
     return boilerplate.get_upload_form()
 
 
@@ -157,7 +121,9 @@ def process_endpoint(file_ids=None):
         process_types = request.data
         process_types = process_types.decode('utf-8')
         all_process_types = process_types.split(',')
+        print(file_ids, 'file_ids')
         file_ids_list = file_ids and file_ids.split(",")
+        print(file_ids_list, "file_ids_list")
         task_list = []
         for process_type in all_process_types:
             if process_type == 'topic':

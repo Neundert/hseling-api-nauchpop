@@ -123,8 +123,8 @@ def get_upload_form():
     <title>Upload new File</title>
     <h1>Upload new File</h1>
     <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
+      <p><input type="file" name="file[]" multiple="">
+         <input type="submit" value="Upload">
     </form>
     '''
 
@@ -169,3 +169,17 @@ def add_processed_file(module_nickname,
         filename = ""
     put_file(filename, contents)
     return filename
+
+
+def get_process_data(file_ids_list):
+    files_to_process = list_files(recursive=True,
+                                    prefix=UPLOAD_PREFIX)
+    if file_ids_list:
+        files_to_process = [UPLOAD_PREFIX + file_id
+                            for file_id in file_ids_list
+                            if (UPLOAD_PREFIX + file_id)
+                            in files_to_process]
+    data_to_process = {
+        file_id[len(UPLOAD_PREFIX):]: get_file(file_id)
+        for file_id in files_to_process}
+    return data_to_process
