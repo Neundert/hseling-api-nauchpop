@@ -51,9 +51,9 @@ def count_all_pos(text):
 
 def pos_stringer(text):
     pos = count_all_pos(text)
-    sup = ('NOUNS:', pos[0], 'VERBS:', pos[1],
-           'PREPOSITIONS:', pos[2], 'CONJS:', pos[3],
-           'ADJECTIVES:', pos[4])
+    sup = ('Существительные:', pos[0], 'Глаголы:', pos[1],
+           'Предлоги:', pos[2], 'Союзы:', pos[3],
+           'Прилагательные:', pos[4])
     llist = list(sup)
     pos_conc = ' '.join(str(x) for x in llist)
     return pos_conc
