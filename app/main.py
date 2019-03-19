@@ -121,9 +121,7 @@ def process_endpoint(file_ids=None):
         process_types = request.data
         process_types = process_types.decode('utf-8')
         all_process_types = process_types.split(',')
-        print(file_ids, 'file_ids')
         file_ids_list = file_ids and file_ids.split(",")
-        print(file_ids_list, "file_ids_list")
         task_list = []
         for process_type in all_process_types:
             if process_type == 'topic':
