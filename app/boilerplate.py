@@ -173,7 +173,7 @@ def add_processed_file(module_nickname,
 
 def get_process_data(file_ids_list):
     files_to_process = list_files(recursive=True,
-                                    prefix=UPLOAD_PREFIX)
+                                  prefix=UPLOAD_PREFIX)
     if file_ids_list:
         files_to_process = [UPLOAD_PREFIX + file_id
                             for file_id in file_ids_list
