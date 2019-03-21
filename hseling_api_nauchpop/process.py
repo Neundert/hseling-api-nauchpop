@@ -14,7 +14,7 @@ def process(data, func):
             text = contents.decode('utf-8')
         else:
             text = contents
-        result.append(str(_ + " result: " + func(text)))
+        result.append(str(_ + "\t" + func(text)))
     return result
 
 
